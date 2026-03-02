@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import java.util.Stack;
 
-public class PalindromeCheckerApp {
+public class PalindromeChecker {
 
     // Method to check if a string is a palindrome using a stack
     public static boolean isPalindrome(String input) {
