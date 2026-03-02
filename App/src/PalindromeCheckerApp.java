@@ -1,55 +1,48 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Scanner;
-import java.util.Stack;
 
 public class PalindromeCheckerApp {
-
-    // Method to check if a string is a palindrome using a stack
-    public static boolean isPalindrome(String input) {
-        if (input == null) {
-            return false; // Null strings are not palindromes
-        }
-
-        // Remove spaces and convert to lowercase for uniform comparison
-        String cleaned = input.replaceAll("\\s+", "").toLowerCase();
-
-        // Edge case: empty string is considered a palindrome
-        if (cleaned.isEmpty()) {
-            return true;
-        }
-
-        Stack<Character> stack = new Stack<>();
-
-        // Push all characters into the stack
-        for (char ch : cleaned.toCharArray()) {
-            stack.push(ch);
-        }
-
-        // Pop characters and compare with original sequence
-        for (char ch : cleaned.toCharArray()) {
-            if (stack.pop() != ch) {
-                return false; // Mismatch found
-            }
-        }
-
-        return true; // All characters matched
-    }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter a string to check palindrome: ");
+        // Read input string
+        System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        try {
-            if (isPalindrome(input)) {
-                System.out.println("✅ The string is a palindrome.");
-            } else {
-                System.out.println("❌ The string is NOT a palindrome.");
+        // Validate input
+        if (input == null || input.isEmpty()) {
+            System.out.println("Input cannot be empty.");
+            return;
+        }
+
+        // Create a Deque to store characters
+        Deque<Character> deque = new ArrayDeque<>();
+
+        // Insert characters into deque
+        for (char ch : input.toCharArray()) {
+            deque.addLast(ch); // add to rear
+        }
+
+        boolean isSame = true;
+
+        // Compare front and rear until deque is empty or mismatch found
+        while (deque.size() > 1) { // stop when 0 or 1 element left
+            char front = deque.removeFirst();
+            char rear = deque.removeLast();
+
+            if (front != rear) {
+                isSame = false;
+                break;
             }
-        } catch (Exception e) {
-            System.out.println("Error occurred: " + e.getMessage());
-        } finally {
-            scanner.close();
+        }
+
+        // Output result
+        if (isSame) {
+            System.out.println("Front and rear elements matched for all comparisons.");
+        } else {
+            System.out.println("Mismatch found between front and rear elements.");
         }
     }
 }
