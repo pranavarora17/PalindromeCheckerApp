@@ -1,76 +1,26 @@
-import java.util.*;
-
-// 1. Strategy Interface
-interface PalindromeStrategy {
-    boolean isPalindrome(String text);
-}
-
-// 2. Concrete Strategy: Using Stack
-class StackStrategy implements PalindromeStrategy {
-    @Override
-    public boolean isPalindrome(String text) {
-        if (text == null) return false;
-        String cleaned = text.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-        Stack<Character> stack = new Stack<>();
-        for (char c : cleaned.toCharArray()) {
-            stack.push(c);
-        }
-        for (char c : cleaned.toCharArray()) {
-            if (stack.pop() != c) return false;
-        }
-        return true;
-    }
-}
-
-// 3. Concrete Strategy: Using Deque
-class DequeStrategy implements PalindromeStrategy {
-    @Override
-    public boolean isPalindrome(String text) {
-        if (text == null) return false;
-        String cleaned = text.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-        Deque<Character> deque = new ArrayDeque<>();
-        for (char c : cleaned.toCharArray()) {
-            deque.addLast(c);
-        }
-        while (deque.size() > 1) {
-            if (!deque.removeFirst().equals(deque.removeLast())) return false;
-        }
-        return true;
-    }
-}
-
-// 4. Context Class
-class PalindromeChecker {
-    private PalindromeStrategy strategy;
-
-    // Inject strategy at runtime
-    public void setStrategy(PalindromeStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public boolean check(String text) {
-        if (strategy == null) {
-            throw new IllegalStateException("No palindrome strategy set.");
-        }
-        return strategy.isPalindrome(text);
-    }
-}
-
-// 5. Demo
 public class PalindromeCheckerApp {
     public static void main(String[] args) {
-        PalindromeChecker checker = new PalindromeChecker();
+        String test = "racecar"; // Use a longer string for better results
 
-        // Choose Stack strategy
-        checker.setStrategy(new StackStrategy());
-        System.out.println("Stack Strategy: 'Madam' -> " + checker.check("Madam"));
+        // 1. StringBuilder Approach
+        long start1 = System.nanoTime();
+        boolean res1 = new StringBuilder(test).reverse().toString().equals(test);
+        long end1 = System.nanoTime();
 
-        // Switch to Deque strategy
-        checker.setStrategy(new DequeStrategy());
-        System.out.println("Deque Strategy: 'A man, a plan, a canal: Panama' -> " +
-                checker.check("A man, a plan, a canal: Panama"));
+        // 2. Two-Pointer Approach
+        long start2 = System.nanoTime();
+        boolean res2 = isTwoPointerPalindrome(test);
+        long end2 = System.nanoTime();
 
-        // Edge case: Not a palindrome
-        System.out.println("Deque Strategy: 'Hello' -> " + checker.check("Hello"));
+        System.out.println("StringBuilder Time: " + (end1 - start1) + " ns");
+        System.out.println("Two-Pointer Time: " + (end2 - start2) + " ns");
+    }
+
+    public static boolean isTwoPointerPalindrome(String s) {
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left++) != s.charAt(right--)) return false;
+        }
+        return true;
     }
 }
